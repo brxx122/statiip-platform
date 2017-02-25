@@ -1,0 +1,156 @@
+{% extends "layout.html" %}
+{% block title %}Homework3 <small>HMM for Chinese Segmentation</small>{% endblock %}
+{% block collapse %} {% endblock %}
+{% block content %}
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="panel panel-info">
+				<div class="panel-heading">
+					<i class="fa fa-list-alt fa-fw"></i>
+					分词训练
+				</div>
+				<div class="panel-body">
+					<div class="col-lg-4">
+						<div class="well">
+							<h4><strong>初始参数</strong></h4>
+							<p>利用先验知识获得的HMM算法初始参数</p>
+							<p>作为后续两个算法的初始参数</p>
+							<p> </p>
+						</div>
+					</div>
+					<div class="col-lg-4">
+						<div class="well">
+							<h4><strong>有监督算法</strong></h4>
+							<p>根据已经分好词的文本</p>
+							<p>直接计算每个字在BEMS四个位置出现的频率</p>
+						</div>
+					</div>
+					<div class="col-lg-4">
+						<div class="well">
+							<h4><strong>无监督算法</strong></h4>
+							<p>Baum-Welch无监督算法</p>
+							<p>利用初始参数进行EM迭代，不断更新参数（训练时间较长）</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- /.row -->
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="panel panel-info">
+				<div class="panel-heading">
+					<i class="fa fa-tasks fa-fw"></i>
+					分词性能
+				</div>
+				<div class="panel-body">
+					{% if result %}
+					<div class="table-responsive">
+						<table class="table table-striped table-bordered table-hover">
+							<thead>
+								<tr>
+									<th>#</th>
+									<th>Recall %</th>
+									<th>Precision %</th>
+									<th>F %</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for i in range(0,2) %}
+								<tr>
+									<td>{{ name[i] }}</td>
+									{% for j in range(0,3) %}
+									<td>{{ result[i][j] }}</td>
+									{% endfor %}
+								</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+					<!-- /.table-responsive -->
+					{% else %}
+					<div class = "col-lg-1">
+						<form action="" method="POST">
+							<button type="submit" name = "submit" value = "result" class="btn btn-outline btn-success" >测试结果</button>
+						</form>
+					</div>
+					{% endif %}
+				</div>
+			</div>
+			<!-- /.panel-default -->
+		</div>
+		<!-- /.col-lg-12 -->
+	</div>
+	<!-- /.row -->
+	
+	<!-- /.row -->
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="panel panel-info">
+				<div class="panel-heading">
+					<i class="fa fa-comment fa-fw"></i>
+					分词测试
+				</div>
+				<div class="panel-body">
+					<div class="row">
+						<div class="col-lg-12">
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									测试文本
+								</div>
+								<div class="panel-body">
+									<form action="" method="POST">
+										{% if input %}
+											<textarea type = 'text' name = "Text" id = "Text" class="form-control" rows="5">{{ input }}</textarea>
+										{% else %}
+											<textarea type = 'text' name = "Text" id = "Text" class="form-control" rows="5">2001年新年钟声即将敲响。人类社会前进的航船就要驶入21世纪的新航程。中国人民进入了向现代化建设第三步战略目标迈进的新征程。在这个激动人心的时刻，我很高兴通过中国国际广播电台、中央人民广播电台和中央电视台，向全国各族人民，向香港特别行政区同胞、澳门特别行政区同胞和台湾同胞、海外侨胞，向世界各国的朋友们，致以新世纪第一个新年的祝贺！百年往事沉浮，载奋斗英雄史册留。是领导英明，辉煌政策，人民力量，功著千秋，唤起全球，加强团结，发展和平定五洲。诚祷愿，达康强祖国，夫复何求。</textarea>
+										{% endif %}
+										<div style="height:5px"></div>
+										<div class = "row">
+											<div class = "col-lg-2">
+												<button type="submit" name = "submit" value = "prob" class="btn btn-outline btn-success btn-block">初始参数</button>
+											</div>
+											<div class = "col-lg-2">
+												<button type="submit" name = "submit" value = "P" class="btn btn-outline btn-success btn-block">有监督算法</button>
+											</div>
+										</div>
+									</form>
+								</div>
+							</div>
+						</div>
+					<div>
+					<div class="col-lg-6">
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								初始参数分词结果
+							</div>
+							<div class="panel-body">
+								{% if prior %}
+								<textarea class="form-control" rows="15">{{ prior }}</textarea>
+								{% else %}
+								<textarea class="form-control" rows="5">{{ prior }}</textarea>
+								{% endif %}
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-6">
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								有监督算法结果
+							</div>
+							<div class="panel-body">
+								{% if prior %}
+								<textarea class="form-control" rows="15">{{ NB }}</textarea>
+								{% else %}
+								<textarea class="form-control" rows="5">{{ prior }}</textarea>
+								{% endif %}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+

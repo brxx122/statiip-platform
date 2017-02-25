@@ -1,0 +1,191 @@
+{% extends "layout.html" %}
+{% block title %}Homework3 <small>HMM for Time Series Prediction</small>{% endblock %}
+{% block collapse %} {% endblock %}
+{% block content %}
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-info">
+			<div class="panel-heading">
+				<i class="fa fa-list-alt fa-fw"></i>
+				基于HMM模型的周择时策略研究
+			</div>
+			<div class="panel-body">
+				<p>根据1950-01-03到2015-10-12所有交易日的SP500日数据（开盘价，最高位，最低位，交易量，收盘价）</p>
+				<ul>
+					<li>用1950-2010年数据来训练HMM</li>
+					<li>预测2011-2015的每日状态(分别用3状态模型和5状态模型)</li>
+					<li>用真实数据计算预测的误差并分析</li>
+				</ul>
+				<form action="" method="POST">
+					<button type="submit" name = "submit" value = "result" class="btn btn-outline btn-success" >训练结果</button>
+				</form>
+			</div>
+		</div>
+		<!-- /.panel panel-info -->
+	</div>
+	<!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-info">
+			<div class="panel-heading">
+				<i class="fa fa-tasks fa-fw"></i>
+				测试结果
+			</div>
+			<div class="panel-body">
+				<div class="col-lg-12">
+					<div class="panel panel-danger">
+						<div class="panel-heading">
+							3状态模型（快速下跌、震荡行情、快速上升）
+						</div>
+						<div class="panel-body">
+							{% if three_state %}
+							<p>Accuracy: {{ a1 }}</p>
+							<div class="table-responsive">
+								<table class="table table-striped table-bordered table-hover">
+									<thead>
+										<tr>
+											<th>#</th>
+											<th>状态0（绿色）</th>
+											<th>状态1（黑色）</th>
+											<th>状态2（红色）</th>
+										</tr>
+									</thead>
+									<tbody>
+										{% for s in range(0,3) %}
+										<tr>
+											<td>{{ name[s] }}</td>
+											{% for d in range(0,3) %}
+											<td>{{ three_state[s][d] }}</td>														
+											{% endfor %}
+										</tr>
+										{% endfor %}
+									</tbody>
+								</table>
+							</div>
+							{% endif %}
+							<!-- /.table-responsive -->
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-12">
+					<div class="panel panel-danger">
+						<div class="panel-heading">
+							5状态模型（大跌、小跌、震荡、小涨、大涨）
+						</div>
+						<div class="panel-body">
+							{% if five_state %}
+							<p>Accuracy: {{ a2 }}</p>
+							<div class="table-responsive">
+								<table class="table table-striped table-bordered table-hover">
+									<thead>
+										<tr>
+											<th>#</th>
+											<th>状态0（绿）</th>
+											<th>状态1（蓝）</th>
+											<th>状态2（黑）</th>
+											<th>状态4（黄）</th>
+											<th>状态5（红）</th>
+										</tr>
+									</thead>
+									<tbody>
+										{% for s in range(0,3) %}
+										<tr>
+											<td>{{ name[s] }}</td>
+											{% for d in range(0,5) %}
+											<td>{{ five_state[s][d] }}</td>														
+											{% endfor %}
+										</tr>
+										{% endfor %}
+									</tbody>
+								</table>
+							</div>
+							{% endif %}
+							<!-- /.table-responsive -->
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- /.panel panel-info -->
+	</div>
+</div>
+<div class="row">
+	<!-- /.col-lg-12 -->
+	<div class="col-lg-12">
+		<div class="panel panel-info">
+			<div class="panel-heading">
+				<i class="fa fa-bar-chart-o fa-fw"></i>
+				图像显示
+			</div>
+			<div class="panel-body">
+				{% if flag %}
+				<div class="col-lg-6">
+					<div class="panel panel-success">
+						<div class="panel-heading">
+							3状态训练结果
+						</div>
+						<div class="panel-body">
+							<img src="{{ url_for('static', filename='images/otrain_3_1.jpg') }}" width="400" height="200"/>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-6">
+					<div class="panel panel-warning">
+						<div class="panel-heading">
+							5状态训练结果
+						</div>
+						<div class="panel-body">
+							<img src="{{ url_for('static', filename='images/otrain_5_1.jpg') }}" width="400" height="200"/>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-6">
+					<div class="panel panel-success">
+						<div class="panel-heading">
+							3状态预测结果
+						</div>
+						<div class="panel-body">
+							<img src="{{ url_for('static', filename='images/otest_3_1.jpg') }}" width="400" height="200"/>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-6">
+					<div class="panel panel-success">
+						<div class="panel-heading">
+							3状态真实结果
+						</div>
+						<div class="panel-body">
+							<img src="{{ url_for('static', filename='images/pred_3_1.jpg') }}" width="400" height="200"/>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-6">
+					<div class="panel panel-warning">
+						<div class="panel-heading">
+							5状态预测结果
+						</div>
+						<div class="panel-body">
+							<img src="{{ url_for('static', filename='images/otest_5_1.jpg') }}" width="400" height="200"/>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-6">
+					<div class="panel panel-warning">
+						<div class="panel-heading">
+							5状态真实结果
+						</div>
+						<div class="panel-body">
+							<img src="{{ url_for('static', filename='images/pred_5_1.jpg') }}" width="400" height="200"/>
+						</div>
+					</div>
+				</div>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+	<!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+{% endblock %}

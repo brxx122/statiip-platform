@@ -1,0 +1,194 @@
+{% extends "layout.html" %}
+{% block title %}Homework2 <small>Classify Text from Labeled and Unlabeled Documents</small>{% endblock %}
+{% block collapse %}collapse{% endblock %}
+{% block content %}
+<script src="{{ url_for('static', filename='js/jquery-3.1.1.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/highcharts.js') }}"></script>
+<script src="{{ url_for('static', filename='js/chartkick.js') }}"></script>
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-info">
+			<div class="panel-heading">
+				20ng数据集分类
+			</div>
+			<div class="panel-body">
+				<div class="col-lg-12">
+					<p>将文章中词汇次数按照文章长度进行标准化</p>
+					<p>由于时间限制选用5000个unlabeled数据和500个测试数据</p>
+					<p>每组数据运行时间在1600~2400s左右。</p>
+					<ul>
+						<li>去除stopword</li>
+					</ul>
+					<div class="row">
+						<div class="col-lg-3">
+						<form action="" method="POST">
+						<button type="submit" name = "submit" value = "ng" class="btn btn-outline btn-success" style="font-family:Microsoft YaHei">训练结果</button>
+						</form>
+						<p> </p>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-lg-12">				
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									准确率随有标签样本数目变化曲线
+								</div>
+								<!-- /.panel-heading -->
+								<div class="panel-body" id = "plt_ng">
+									{% line_chart ng with min = 0 max = 50 %}
+								</div>
+								<!-- /.panel-body -->
+							</div>
+							<!-- /.panel -->
+						</div>
+						<!-- /.col-lg-12 -->
+					</div>
+					<!-- /.row -->
+				</div>
+				<!-- /.col-lg-12 -->
+			</div>
+			<!-- /.panel panel-body -->
+		</div>
+		<!-- /.panel panel-info -->
+		<div class="panel panel-info">
+			<div class="panel-heading">
+				webkb数据集分类
+			</div>
+			<div class="panel-body">
+				<div class="col-lg-12">
+					<p>将文章中词汇次数不进行标准化</p>
+					<p>由于时间限制选用2500个unlabeled数据和20%测试数据</p>
+					<p>每组数据运行时间在160s左右</p>
+					<p>总共进行3次取平均值</p>
+					<ul>
+						<li>选取平均互信息量最大的2000词汇</li>
+					</ul>
+					<div class="row">
+						<div class="col-lg-3">
+						<form action="" method="POST">
+						<button type="submit" name = "submit" value = "webkb" class="btn btn-outline btn-success" style="font-family:Microsoft YaHei">训练结果</button>
+						</form>
+						<p> </p>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-lg-12">				
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									准确率随有标签样本数目变化曲线
+								</div>
+								<!-- /.panel-heading -->
+								<div class="panel-body" >
+									{% line_chart webkb with min = 0 max = 75 %}
+								</div>
+								<!-- /.panel-body -->
+							</div>
+							<!-- /.panel -->
+						</div>
+						<!-- /.col-lg-12 -->
+					</div>
+					<!-- /.row -->
+				</div>
+				<!-- /.col-lg-12 -->
+			</div>
+			<!-- /.panel panel-body -->
+		</div>
+		<!-- /.panel panel-info -->
+<div class="panel panel-info">
+			<div class="panel-heading">
+				r8，r52数据集分类
+			</div>
+			<div class="panel-body">
+				<div class="col-lg-12">
+					<p>将文章中词汇次数不进行标准化</p>
+					<p>由于时间限制选用2500个unlabeled数据和500个测试数据</p>
+					<p>每个类别数据运行时间在60s左右</p>
+					<ul>
+						<li>选取平均互信息量最大的2000词汇</li>
+						<li>进行二分类</li>
+						<li>使用50个labeled数据，其中10个为正标签，40为负标签</li>
+					</ul>
+					<div class="row">
+						<div class="col-lg-3">
+						<form action="" method="POST">
+						<button type="submit" name = "submit" value = "r8r32" class="btn btn-outline btn-success" style="font-family:Microsoft YaHei">训练结果</button>
+						</form>
+						<p> </p>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-lg-12">				
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									不同类别Navie Bayes和EM算法准确率对比
+								</div>
+								<!-- /.panel-heading -->
+								<div class="panel-body">
+									{% if r8 %}
+									<div class="table-responsive">
+										<table class="table table-striped table-bordered table-hover">
+											<thead>
+												<tr>
+													<th>r8</th>
+													<th>Navie Bayes %</th>
+													<th>EM算法 %</th>
+												</tr>
+											</thead>
+											<tbody>
+												{% for class in range(0,8) %}
+												<tr>
+													<td>{{ r8_name[class] }}</td>
+													{% for j in range(0,2) %}
+													<td>{{ r8[class][j] }}</td>														
+													{% endfor %}
+												</tr>
+												{% endfor %}
+											</tbody>
+										</table>
+									</div>
+									{% endif %}
+									<!-- /.table-responsive -->
+									{% if r52 %}
+									<div class="table-responsive">
+										<table class="table table-striped table-bordered table-hover">
+											<thead>
+												<tr>
+													<th>r52</th>
+													<th>Navie Bayes %</th>
+													<th>EM算法 %</th>
+												</tr>
+											</thead>
+											<tbody>
+												{% for class in range(0,52) %}
+												<tr>
+													<td>{{ r52_name[class] }}</td>
+													{% for j in range(0,2) %}
+													<td>{{ r52[class][j] }}</td>														
+													{% endfor %}
+												</tr>
+												{% endfor %}
+											</tbody>
+										</table>
+									</div>
+									{% endif %}
+									<!-- /.table-responsive -->
+								</div>
+								<!-- /.panel-body -->
+							</div>
+							<!-- /.panel -->
+						</div>
+						<!-- /.col-lg-12 -->
+					</div>
+					<!-- /.row -->
+				</div>
+				<!-- /.col-lg-12 -->
+			</div>
+			<!-- /.panel panel-body -->
+		</div>
+		<!-- /.panel panel-info -->
+	</div>
+	<!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+{% endblock %}

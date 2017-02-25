@@ -1,0 +1,329 @@
+{% extends "layout.html" %}
+{% block title %}Homework4 <small>Chinese Segmentation using CRF</small>{% endblock %}
+{% block collapse %}collapse{% endblock %}
+{% block content %}
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-info">
+			<div class="panel-heading">
+				<i class="fa fa-list-alt fa-fw"></i>
+				分词训练
+			</div>
+			<div class="panel-body">
+				<div class="col-lg-4">
+					<div class="panel panel-success">
+						<div class="panel-heading">
+							CRF分词性能
+						</div>
+						<div class="panel-body">
+							<ul>
+								<li>通过训练文本获得词表，提取不同特征进行性能对比</li>
+								<li>考虑到lexicon和conjunction feature特征函数</li>
+							</ul>
+							<div class = "col-lg-1">
+								<form action="" method="POST">
+									<button type="submit" name = "submit" value = "perform" class="btn btn-outline btn-success" >分词性能</button>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-4">
+					<div class="panel panel-success">
+						<div class="panel-heading">
+							新词发现
+						</div>
+						<div class="panel-body">
+							<ul>
+								<li>在根据已有词表分词的同时，发现可能的新词</li>
+								<li>考虑自身置信度高和被置信度高的词语包围的词作为新词</li>
+							</ul>
+							<div class = "col-lg-1">
+								<form action="" method="POST">
+									<button type="submit" name = "submit" value = "discover" class="btn btn-outline btn-success" >新词发现</button>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-4">
+					<div class="panel panel-success">
+						<div class="panel-heading">
+							错词取样
+						</div>
+						<div class="panel-body">
+							<ul>
+								<li>将被错误分词的句子或者词语显示出来</li>
+								<li>仅考虑已有标签的开发集中的样本数据</li>
+							</ul>
+							<div class = "col-lg-1">
+								<form action="" method="POST">
+									<button type="submit" name = "submit" value = "wrong" class="btn btn-outline btn-success" >错词取样</button>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-info">
+			<div class="panel-heading">
+				<i class="fa fa-tasks fa-fw"></i>
+				CRF性能
+			</div>
+			<div class="panel-body">
+				<!-- Nav tabs -->
+				<ul class="nav nav-tabs">
+					<li {% if page == 0 %}class="active"{% endif %}><a href="#crf_panel" data-toggle="tab" aria-expanded="true">分词性能</a>
+					</li>
+					<li {% if page == 1 %}class="active"{% endif %}><a href="#new_panel" data-toggle="tab" aria-expanded="false">新词发现</a>
+					</li>
+					<li {% if page == 2 %}class="active"{% endif %}><a href="#wrong_panel" data-toggle="tab" aria-expanded="false">错词取样</a>
+					</li>
+				</ul>
+
+				<!-- Tab panes -->
+				<div class="tab-content">
+					<div {% if not page or page == 0%} class="tab-pane fade active in" {% else %} class="tab-pane fade" {% endif %} id="crf_panel">
+						{% if close %}
+						<div class="col-lg-12">
+							<h4>Close feature</h4>
+							<div class="table-responsive">
+								<table class="table table-striped table-bordered table-hover">
+									<thead>
+										<tr>
+											<th>#</th>
+											<th>Precision</th>
+											<th>Recall</th>
+											<th>F</th>
+											<th>Item Accuracy</th>
+											<th>Instance Accuracy</th>
+										</tr>
+									</thead>
+									<tbody>
+										{% for i in range(0,3) %}
+										<tr>
+											<td><strong><em>{{ name[i] }}</em></strong></td>
+											{% for j in range(0,5) %}
+											<td>{{ close[i][j] }}</td>
+											{% endfor %}
+										</tr>
+										{% endfor %}
+									</tbody>
+								</table>
+							</div>
+							<!-- /.table-responsive -->
+						</div>
+						<div class="col-lg-12">
+							<h4>Open feature</h4>
+							<div class="table-responsive">
+								<table class="table table-striped table-bordered table-hover">
+									<thead>
+										<tr>
+											<th>#</th>
+											<th>Precision</th>
+											<th>Recall</th>
+											<th>F</th>
+											<th>Item Accuracy</th>
+											<th>Instance Accuracy</th>
+										</tr>
+									</thead>
+									<tbody>
+										{% for i in range(0,3) %}
+										<tr>
+											<td><strong><em>{{ name[i] }}</em></strong></td>
+											{% for j in range(0,5) %}
+											<td>{{ open[i][j] }}</td>
+											{% endfor %}
+										</tr>
+										{% endfor %}
+									</tbody>
+								</table>
+							</div>
+							<!-- /.table-responsive -->
+						</div>
+						<div class="col-lg-12">
+							<div class="col-lg-4">
+								<div class="well">
+									<h5><strong><em>feature1</em></strong></h5>
+									<code>
+										<p>#Unigram</p>
+										<p>c[-2]</p>
+										<p>c[-1]</p>
+										<p>c[1]</p>
+										<p>c[2]</p>
+										<p>#Bigram</p>
+										<p>c[0]|c[1]</p>
+										<p>c[-1]|c[0]</p>
+										<p>c[-2]|c[-1]</p>
+										<p>#Trigram</p>
+										<p>c[-1]|c[0]|c[1]</p>
+										<p>#others</p>
+										<p>is_punct</p>
+										<p>class</p>
+									</code>
+								</div>
+							</div>
+							<div class="col-lg-4">
+								<div class="well">
+									<h5><strong><em>feature2</em></strong></h5>
+									<code>
+										<p>#Unigram</p>
+										<p>c[-2]</p>
+										<p>c[-1]</p>
+										<p>c[0]</p>
+										<p>c[1]</p>
+										<p>c[2]</p>
+										<p>#Bigram</p>
+										<p>c[0]|c[1]</p>
+										<p>c[-1]|c[0]</p>
+										<p>#Trigram</p>
+										<p>c[-1]|c[0]|c[1]</p>
+										<p>#others</p>
+										<p>is_punct</p>
+										<p>class</p>
+									</code>
+								</div>
+							</div>
+							<div class="col-lg-4">
+								<div class="well">
+									<h5><strong><em>feature3</em></strong></h5>
+									<code>
+										<p>#Unigram</p>
+										<p>c[-2]</p>
+										<p>c[-1]</p>
+										<p>c[0]</p>
+										<p>c[1]</p>
+										<p>c[2]</p>
+										<p>#Bigram</p>
+										<p>c[0]|c[1]</p>
+										<p>c[-1]|c[0]</p>
+										<p>c[-2]|c[-1]</p>
+										<p>c[1]|c[2]</p>
+										<p>#Trigram</p>
+										<p>c[-1]|c[0]|c[1]</p>
+										<p>#others</p>
+										<p>is_punct</p>
+										<p>class</p>
+										<p>pos</p>
+									</code>
+								</div>
+							</div>
+						</div>
+						{% endif %}
+					</div>
+					<div {% if page == 1%} class="tab-pane fade active in" {% else %} class="tab-pane fade" {% endif %} id="new_panel">
+						<div class="col-lg-10 col-lg-offset-1">
+							<form action="" method="POST">
+								<div class="form-group">
+									<label class="control-label">分词文本</label>
+									{% if new_input %}
+										<textarea type = 'text' name = "New_text" id = "New_text" class="form-control" rows="2">{{ new_input }}</textarea>
+									{% else %}
+										<textarea type = 'text' name = "New_text" id = "New_text" class="form-control" rows="2">国家主席江泽明</textarea>
+									{% endif %}
+								</div>
+								<div class="form-group">
+									<label class="control-label">分词结果</label>
+									<textarea type = 'text' class="form-control" rows="2">{{ segment }}</textarea>
+								</div>
+								<div class="form-group">
+									<label class="control-label">新词发现</label>
+									<textarea type = 'text' class="form-control" rows="2">{{ new_words }}</textarea>
+								</div>
+								<div style="height:5px"></div>
+								<div class="form-group">
+									<div class = "row">
+										<div class = "col-lg-4">
+											<button type="submit" name = "submit" value = "new_words" class="btn btn-outline btn-success btn-block">Discover</button>
+										</div>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+					<div {% if page == 2%} class="tab-pane fade active in" {% else %} class="tab-pane fade" {% endif %} id="wrong_panel">
+						<div class="col-lg-12">
+							<textarea type = 'text' class="form-control" rows="10">{{ wrong }}</textarea>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- /.panel-default -->
+	</div>
+	<!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-info">
+			<div class="panel-heading">
+				<i class="fa fa-comment fa-fw"></i>
+				HMM和CRF分词对比
+			</div>
+			<div class="panel-body">
+				<div class="col-lg-12">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							测试文本
+						</div>
+						<div class="panel-body">
+							<form action="" method="POST">
+								{% if input %}
+									<textarea type = 'text' name = "Text" id = "Text" class="form-control" rows="5">{{ input }}</textarea>
+								{% else %}
+									<textarea type = 'text' name = "Text" id = "Text" class="form-control" rows="5">2001年新年钟声即将敲响。人类社会前进的航船就要驶入21世纪的新航程。中国人民进入了向现代化建设第三步战略目标迈进的新征程。在这个激动人心的时刻，我很高兴通过中国国际广播电台、中央人民广播电台和中央电视台，向全国各族人民，向香港特别行政区同胞、澳门特别行政区同胞和台湾同胞、海外侨胞，向世界各国的朋友们，致以新世纪第一个新年的祝贺！百年往事沉浮，载奋斗英雄史册留。是领导英明，辉煌政策，人民力量，功著千秋，唤起全球，加强团结，发展和平定五洲。诚祷愿，达康强祖国，夫复何求。</textarea>
+								{% endif %}
+								<div style="height:5px"></div>
+								<div class = "row">
+									<div class = "col-lg-2">
+										<button type="submit" name = "submit" value = "hmm" class="btn btn-outline btn-success btn-block">HMM</button>
+									</div>
+									<div class = "col-lg-2">
+										<button type="submit" name = "submit" value = "crf" class="btn btn-outline btn-success btn-block">CRF</button>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-6">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							HMM分词
+						</div>
+						<div class="panel-body">
+							{% if hmm %}
+							<textarea class="form-control" rows="15">{{ hmm }}</textarea>
+							{% else %}
+							<textarea class="form-control" rows="5"></textarea>
+							{% endif %}
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-6">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							CRF分词
+						</div>
+						<div class="panel-body">
+							{% if crf %}
+							<textarea class="form-control" rows="15">{{ crf }}</textarea>
+							{% else %}
+							<textarea class="form-control" rows="5"></textarea>
+							{% endif %}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

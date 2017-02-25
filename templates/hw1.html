@@ -1,0 +1,160 @@
+{% extends "layout.html" %}
+{% block title %}Homework1 <small>Text Classification and Naïve Bayes</small>{% endblock %}
+{% block collapse %}collapse{% endblock %}
+{% block content %}
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-info">
+			<div class="panel-heading">
+				Navie Bayes 小数据集训练
+			</div>
+			<div class="panel-body">
+				<div class="col-lg-12">
+					<p><strong>训练文本：</strong>正常邮件25，垃圾邮件25</p>
+					<div class="row">
+						<div class="col-lg-3">
+						<form action="" method="POST">
+						<button type="submit" name = "submit" value = "start" class="btn btn-outline btn-success" style="font-family:Microsoft YaHei">开始训练</button>
+						<button type="submit" name = "submit" value = "loop" class="btn btn-outline btn-success" style="font-family:Microsoft YaHei">循环100次</button>
+						</form>
+						<p> </p>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-lg-12">
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									测试结果
+								</div>
+								<div class="panel-body">
+									{% if result1 %}
+									<textarea class="form-control" rows="5" name="result1">{{ result1 }}</textarea>
+									{% endif %}
+								</div>
+							</div>
+						</div>
+						{% if text %}
+						<div class="col-lg-12">
+							<div class="panel panel-info">
+								<div class="panel-heading">
+									被错误分类的邮件
+								</div>
+								<div class="panel-body">						
+									<textarea class="form-control" rows="8">{{ text }}</textarea>
+								</div>
+							</div>
+						</div>
+						{% endif %}
+					</div>
+				</div>
+			</div>
+			<!-- panel-body-->
+		</div>
+		<!-- /.panel panel-info -->
+	</div>
+	<!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-info">
+			<div class="panel-heading">
+				Navie Bayes CSDMC2010_SPAM数据集
+			</div>
+			<div class="panel-body">
+				<div class="col-lg-12">
+					<p>实验采用CSDMC2010_SPAM 数据集，包括4327 个有标签的训练数据和4292 个无标签测试数据</p>
+					<ul>
+						<li>去除stopword</li>
+						<li>计算单词的TF-IDF 值，来衡量该单词对于文本分类的贡献度</li>
+					</ul>
+						
+						<form action="" method="POST">
+						<button type="submit" name = "submit" value = "start2" class="btn btn-outline btn-success" style="font-family:Microsoft YaHei">训练结果</button>
+						</form>
+						<p> </p>
+						
+				</div>
+					<div class="col-lg-12">				
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								TF_IDF值
+							</div>
+							<!-- /.panel-heading -->
+							<div class="panel-body">
+								<script src="{{ url_for('static', filename='js/jquery-3.1.1.min.js') }}"></script>
+								<script src="{{ url_for('static', filename='js/highcharts.js') }}"></script>
+								<script src="{{ url_for('static', filename='js/chartkick.js') }}"></script>
+								{% line_chart TF_IDF %}
+							<!-- /.panel-body -->
+						</div>
+						<!-- /.panel -->
+						</div>
+					</div>
+					<!-- /.col-lg-12 -->
+					<div class="col-lg-6">				
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								Error rate
+							</div>
+							<!-- /.panel-heading -->
+							<div class="panel-body">
+								{% line_chart error with min=0.03 max=0.05 %}
+							</div>
+							<!-- /.panel-body -->
+						</div>
+						<!-- /.panel -->
+					</div>
+					<!-- /.col-lg-6 -->
+					<div class="col-lg-6">				
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								F rate
+							</div>
+							<!-- /.panel-heading -->
+							<div class="panel-body">									
+								{% line_chart F with min=0.95 max=1.0 %}
+							</div>
+							<!-- /.panel-body -->
+						</div>
+						<!-- /.panel -->
+					</div>
+					<!-- /.col-lg-6 -->
+					<div class="col-lg-12">
+						<div class="panel panel-info">
+							<div class="panel-heading">
+								测试结果
+							</div>
+							<div class="panel-body">
+								{% if result2 %}
+									<textarea class="form-control" rows="5">{{ result2 }}</textarea>
+								{% endif %}
+							</div>
+						</div>
+					</div>
+					<!-- /.col-lg-12 -->
+					<div class="col-lg-12">
+						<div class="panel panel-info">
+							<div class="panel-heading">
+								使用该分类器分类邮件的结果
+							</div>
+							<div class="panel-body">
+								{% if result2_1 %}
+									<textarea class="form-control" rows="6">{{ result2_1 }}</textarea>
+								{% endif %}
+							</div>
+						</div>
+					</div>
+					<!-- /.col-lg-12 -->
+					
+				<!-- /.col-lg-12 -->
+			</div>
+			<!-- /.panel panel-body -->
+		</div>
+		<!-- /.panel panel-info -->
+	</div>
+	<!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+
+{% endblock %}
